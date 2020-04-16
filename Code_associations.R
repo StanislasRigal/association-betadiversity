@@ -393,7 +393,7 @@ ggplot(b[1:109,], aes(x=spj, y=mean_ses))+
   theme_light()
 
 bb <- as.data.frame(matrix_association %>% group_by(spi, spj) %>% summarize(mean_ses=mean(ses, na.rm=T)))
-bb <- as.data.frame(na.omit(bb) %>% group_by(spi) %>% summarize(count=n()))
+bb <- as.data.frame(na.omit(bb) %>% group_by(spi) %>% summarize(sd_ses=sd(mean_ses, na.rm=T),count=n()))
 
 #### Computing community intensity and attractiveness ----
 
@@ -409,7 +409,8 @@ community_association<-function(x, nb.iter){
   datasso<-data.frame(spi=c(t(combn(levels(b$code_sp),2))[,1], t(combn(levels(b$code_sp),2))[,2]), spj=c(t(combn(levels(b$code_sp),2))[,2], t(combn(levels(b$code_sp),2))[,1]))
   aaa<-droplevels(subset(aa, spi %in% datasso$spi))
   aaa<-droplevels(subset(aaa, spj %in% datasso$spj))
-  aaa$abond<-b$abond[match(aaa$spi,b$code_sp)]
+  aaa<-aaa[aaa$spi!=aaa$spj,]
+  aaa$abond<-b$abond[match(aaa$spi,b$code_sp)]*b$abond[match(aaa$spj,b$code_sp)]/2
   aaa$ses_abond<-aaa$abond*aaa$ses
   
   aaa<-data.frame(ab_ses_abond=sum(abs(aaa$ses_abond), na.rm = TRUE),

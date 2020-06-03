@@ -437,7 +437,7 @@ community_association<-function(x, nb.iter){
     datasso<-data.frame(spi=c(t(combn(levels(b$code_sp),2))[,1], t(combn(levels(b$code_sp),2))[,2]), spj=c(t(combn(levels(b$code_sp),2))[,2], t(combn(levels(b$code_sp),2))[,1]))
     aaa<-droplevels(subset(aa, spi %in% datasso$spi))
     aaa<-droplevels(subset(aaa, spj %in% datasso$spj))
-    aaa$abond<-b$abond[match(aaa$spi,b$code_sp)]
+    aaa$abond<-b$abond[match(aaa$spi,b$code_sp)]*b$abond[match(aaa$spj,b$code_sp)]/2
     aaa$ses_abond<-aaa$abond*aaa$ses
     
     aaa<-data.frame(ab_ses_abond=sum(abs(aaa$ses_abond), na.rm = TRUE),
@@ -1125,7 +1125,7 @@ ggplot(rela_trend1, aes(x = scale, y = value, group=variable, shape=variable))+
   theme_light(base_size = 20)+labs(x ="Window radius (km)", y = "Slope")+ theme(legend.position="none")
 
 
-rela_bv1<-data.frame(cor=c(summary(gam(a[,443]~a[,127]+te(a$lon2,a$lat2,bs="tp",k=3)))$p.coef[[2]],rep(NA,20)),
+rela_bv1<-data.frame(cor=c(summary(gam(a[,443]~a[,127]+te(a$lon2,a$lat2,bs="tp",k=3)))$p.coef[[2]],rep(NA,20)),#plot(gam(a[,443]~a[,127]+te(a$lon2,a$lat2,bs="tp",k=3))$residuals~a[,127])
                  pval=c(summary(gam(a[,443]~a[,127]+te(a$lon2,a$lat2,bs="tp",k=3)))$p.pv[[2]],rep(NA,20)),
                  echelle=c(0,seq(from=10,to=200,length.out=20))) #beta-diversity vs intensity
 for(i in 2:20){
@@ -1133,7 +1133,7 @@ for(i in 2:20){
   rela_bv1[i+1,2]<-summary(gam(a[,3*i+380]~a[,6*i+3]+te(a$lon2,a$lat2,bs="tp",k=3)))$p.pv[[2]]
 }
 
-rela_bv2<-data.frame(cor=c(summary(gam(a[,443]~a[,128]+te(a$lon2,a$lat2,bs="tp",k=3)))$p.coef[[2]],rep(NA,20)),
+rela_bv2<-data.frame(cor=c(summary(gam(a[,443]~a[,128]+te(a$lon2,a$lat2,bs="tp",k=3)))$p.coef[[2]],rep(NA,20)),#plot(gam(a[,443]~a[,128]+te(a$lon2,a$lat2,bs="tp",k=3))$residuals~a[,128])
                      pval=c(summary(gam(a[,443]~a[,128]+te(a$lon2,a$lat2,bs="tp",k=3)))$p.pv[[2]],rep(NA,20)),
                      echelle=c(0,seq(from=10,to=200,length.out=20))) #beta-diversity vs attractiveness
 for(i in 2:20){
@@ -1141,8 +1141,8 @@ for(i in 2:20){
   rela_bv2[i+1,2]<-summary(gam(a[,3*i+380]~a[,6*i+4]+te(a$lon2,a$lat2,bs="tp",k=3)))$p.pv[[2]]
 }
 
-rela_bv3<-data.frame(cor=c(summary(gam(a[,443]~a[,372]+a[,379]+te(a$lon2,a$lat2,bs="tp",k=3)))$p.coef[[2]],rep(NA,20)),
-                     pval=c(summary(gam(a[,443]~a[,372]+a[,379]+te(a$lon2,a$lat2,bs="tp",k=3)))$p.pv[[2]],rep(NA,20)),
+rela_bv3<-data.frame(cor=c(summary(gam(a[,443]~a[,372]+a[,378]+te(a$lon2,a$lat2,bs="tp",k=3)))$p.coef[[2]],rep(NA,20)),#plot(gam(a[,443]~a[,372]+a[,378]+te(a$lon2,a$lat2,bs="tp",k=3))$residuals~a[,372])
+                     pval=c(summary(gam(a[,443]~a[,372]+a[,378]+te(a$lon2,a$lat2,bs="tp",k=3)))$p.pv[[2]],rep(NA,20)),
                      echelle=c(0,seq(from=10,to=200,length.out=20))) #beta-diversity vs clique
 for(i in 2:20){
   rela_bv3[i+1,1]<-summary(gam(a[,3*i+380]~a[,12*i+121]+a[,12*i+127]+te(a$lon2,a$lat2,bs="tp",k=3)))$p.coef[[2]]
@@ -1159,7 +1159,7 @@ ggplot(rela_betadiv1, aes(x = scale, y = value, group=variable, shape=variable))
   theme_light(base_size = 20)+labs(x ="Window radius (km)", y = "Slope")+ theme(legend.position="none")
 
 
-rela_bvt1<-data.frame(cor=c(summary(gam(a[,445]~a[,125]+te(a$lon2,a$lat2,bs="tp",k=3)))$p.coef[[2]],rep(NA,20)),
+rela_bvt1<-data.frame(cor=c(summary(gam(a[,445]~a[,125]+te(a$lon2,a$lat2,bs="tp",k=3)))$p.coef[[2]],rep(NA,20)),#plot(gam(a[,445]~a[,125]+te(a$lon2,a$lat2,bs="tp",k=3))$residuals~unlist(gam(a[,445]~a[,125]+te(a$lon2,a$lat2,bs="tp",k=3))$model[2]))
                   pval=c(summary(gam(a[,445]~a[,125]+te(a$lon2,a$lat2,bs="tp",k=3)))$p.pv[[2]],rep(NA,20)),
                   echelle=c(0,seq(from=10,to=200,length.out=20)))
 for(i in 3:20){
@@ -1168,7 +1168,7 @@ for(i in 3:20){
   rela_bvt1[i+1,2]<-summary(gam(aa[,3*i+381]~aa[,6*i-1]+te(aa$lon2,aa$lat2,bs="tp",k=3)))$p.pv[[2]]
 }
 
-rela_bvt2<-data.frame(cor=c(summary(gam(a[,445]~a[,126]+te(a$lon2,a$lat2,bs="tp",k=3)))$p.coef[[2]],rep(NA,20)),
+rela_bvt2<-data.frame(cor=c(summary(gam(a[,445]~a[,126]+te(a$lon2,a$lat2,bs="tp",k=3)))$p.coef[[2]],rep(NA,20)),#plot(gam(a[,445]~a[,126]+te(a$lon2,a$lat2,bs="tp",k=3))$residuals~unlist(gam(a[,445]~a[,126]+te(a$lon2,a$lat2,bs="tp",k=3))$model[2]))
                   pval=c(summary(gam(a[,445]~a[,126]+te(a$lon2,a$lat2,bs="tp",k=3)))$p.pv[[2]],rep(NA,20)),
                   echelle=c(0,seq(from=10,to=200,length.out=20)))
 for(i in 3:20){
@@ -1177,7 +1177,7 @@ for(i in 3:20){
   rela_bvt2[i+1,2]<-summary(gam(aa[,3*i+381]~aa[,6*i+1]+te(aa$lon2,aa$lat2,bs="tp",k=3)))$p.pv[[2]]
 }
 
-rela_bvt3<-data.frame(cor=c(summary(gam(a[,445]~a[,371]+a[,377]+te(a$lon2,a$lat2,bs="tp",k=3)))$p.coef[[2]],rep(NA,20)),
+rela_bvt3<-data.frame(cor=c(summary(gam(a[,445]~a[,371]+a[,377]+te(a$lon2,a$lat2,bs="tp",k=3)))$p.coef[[2]],rep(NA,20)),#plot(gam(a[,445]~a[,371]+a[,377]+te(a$lon2,a$lat2,bs="tp",k=3))$residuals~unlist(gam(a[,445]~a[,371]+a[,377]+te(a$lon2,a$lat2,bs="tp",k=3))$model[2]))
                   pval=c(summary(gam(a[,445]~a[,371]+a[,377]+te(a$lon2,a$lat2,bs="tp",k=3)))$p.pv[[2]],rep(NA,20)),
                   echelle=c(0,seq(from=10,to=200,length.out=20)))
 for(i in 5:20){
@@ -1195,6 +1195,54 @@ rela_betadiv_t1$pvalue<- -sign(rela_betadiv_t2$value-0.05)
 ggplot(rela_betadiv_t1, aes(x = scale, y = value, group=variable, shape=variable))+
   geom_point(size=3, aes(col=as.character(pvalue)))+scale_color_grey()+
   theme_light(base_size = 20)+labs(x ="Window radius (km)", y = "Slope")+ theme(legend.position="none")
+
+
+
+#Plot residuals
+
+data_to_plot<-data.frame(res=c(residuals(gam(a[,443]~a[,127]+te(a$lon2,a$lat2,bs="tp",k=3)),type="working"),
+                               residuals(gam(a[,443]~a[,128]+te(a$lon2,a$lat2,bs="tp",k=3)),type="working"),
+                               residuals(gam(a[,443]~a[,372]+a[,378]+te(a$lon2,a$lat2,bs="tp",k=3)),type="working"),
+                               residuals(gam(a[,445]~a[,125]+te(a$lon2,a$lat2,bs="tp",k=3)),type="working"),
+                               residuals(gam(a[,445]~a[,126]+te(a$lon2,a$lat2,bs="tp",k=3)),type="working"),
+                               residuals(gam(a[,445]~a[,371]+a[,377]+te(a$lon2,a$lat2,bs="tp",k=3)),type="working")),
+                         predict=c(predict(gam(a[,443]~a[,127]+te(a$lon2,a$lat2,bs="tp",k=3)),type="terms")[,1],
+                                   predict(gam(a[,443]~a[,128]+te(a$lon2,a$lat2,bs="tp",k=3)),type="terms")[,1],
+                                   predict(gam(a[,443]~a[,372]+a[,378]+te(a$lon2,a$lat2,bs="tp",k=3)),type="terms")[,1],
+                                   predict(gam(a[,445]~a[,125]+te(a$lon2,a$lat2,bs="tp",k=3)),type="terms")[,1],
+                                   predict(gam(a[,445]~a[,126]+te(a$lon2,a$lat2,bs="tp",k=3)),type="terms")[,1],
+                                   predict(gam(a[,445]~a[,371]+a[,377]+te(a$lon2,a$lat2,bs="tp",k=3)),type="terms")[,1]),
+                         term=c(a[,127],a[,128],a[,372],
+                                unlist(gam(a[,445]~a[,125]+te(a$lon2,a$lat2,bs="tp",k=3))$model[2]),
+                                unlist(gam(a[,445]~a[,126]+te(a$lon2,a$lat2,bs="tp",k=3))$model[2]),
+                                unlist(gam(a[,445]~a[,371]+a[,377]+te(a$lon2,a$lat2,bs="tp",k=3))$model[2])),
+                         rel=c(rep("intensity",length(a[,127])),
+                               rep("attractiveness",length(a[,128])),
+                               rep("clique",length(a[,372])),
+                               rep("t_intensity",length(gam(a[,445]~a[,125]+te(a$lon2,a$lat2,bs="tp",k=3))$residuals)),
+                               rep("t_attractiveness",length(gam(a[,445]~a[,126]+te(a$lon2,a$lat2,bs="tp",k=3))$residuals)),
+                               rep("t_clique",length(gam(a[,445]~a[,371]+a[,377]+te(a$lon2,a$lat2,bs="tp",k=3))$residuals))))
+
+#partial residuals for a term are just the whole model residuals + the corresponding estimate of the term
+data_to_plot$partial_res<-data_to_plot$res+data_to_plot$predict
+#data_to_plot$trend<-c(rep("spatial",length(c(a[,127],a[,128],a[,372]))), rep("trend", nrow(data_to_plot)-length(c(a[,127],a[,128],a[,372]))))
+
+#require(see) for theme_modern if needed
+ggplot(data_to_plot, aes(x = term, y = partial_res)) +
+  theme_light() +
+  geom_point(shape = 1, col = "blue", size = 2) +
+  #geom_smooth(method = "loess", span = 2/3, linetype = "dashed", se = FALSE)+ facet_grid(. ~ rel)
+  geom_smooth(method = "lm",formula = y~x, se = FALSE)+ facet_grid(. ~ rel, scales="free_x")
+
+ggplot(data_to_plot[data_to_plot$rel %in% c("intensity","attractiveness","clique"),], aes(x = term, y = partial_res)) +
+  theme_light() +
+  geom_point(shape = 1, col = "blue", size = 2) +
+  geom_smooth(method = "lm",formula = y~x, se = FALSE)+ facet_grid(. ~ rel, scales="free_x")
+
+ggplot(data_to_plot[data_to_plot$rel %in% c("t_intensity","t_attractiveness","t_clique"),], aes(x = term, y = partial_res)) +
+  theme_light() +
+  geom_point(shape = 1, col = "blue", size = 2) +
+  geom_smooth(method = "lm",formula = y~x, se = FALSE)+ facet_grid(. ~ rel, scales="free_x")
 
 
 #### Mapping indices ----
